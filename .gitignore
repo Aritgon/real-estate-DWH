@@ -1,0 +1,25 @@
+# ---big files---
+*.json
+*.csv
+*.xlsx
+*.parquet
+*.sqlite
+*.txt
+
+# ---python---
+__pycache__/
+.env
+env/
+venv/
+*.py[cod]
+*$py.class
+
+# ---IDEs---
+.vscode
+.codium
+.DS_Store
+Thumbs.db
+
+# ---logs---
+*.log
+tmp/
