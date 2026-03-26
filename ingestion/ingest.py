@@ -1,8 +1,21 @@
 # import required libraries.
 import requests
+import time
+import logging
+from datetime import datetime
 
 # API endpoint.
 # URL = "https://data.ct.gov/resource/5mzw-sjtu.json"
+
+# logging setup.
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("/home/linuxpaglu/real_estate_DWH/pipeline_main.log"),
+        logging.StreamHandler()
+    ]
+)
 
 def fetch_data():
     # parameters.
@@ -15,20 +28,19 @@ def fetch_data():
             # setting parameters (SOCRATA uses $ for parameters)
             params = {
                 "$limit" : LIMIT,
-                "$offset" : OFFSET,
-                "$order" : ":id" 
+                "$offset" : OFFSET
             }
         
             # fetch the data.
-            print(f"starting data fetch operation, at {OFFSET}")
+            logging.info(f"Initiating fetch operation at offset : {OFFSET}")
             response = requests.get(API_URL, params=params)
             response.raise_for_status() # raise errors.
 
-            data = response.json() # JSON format.and
+            data = response.json() # JSON format.
 
             # if there is no data left, the loop will break with the last fetched data rows.
             if not data:
-                print(f"data fetch operation is finished.")
+                logging.info(f"Data fetch operation is finished.No more data in the source.")
                 break
 
             # using yield to pause the data fetch operation.
@@ -36,12 +48,12 @@ def fetch_data():
 
             # keeping the loop for pagination.
             OFFSET += LIMIT
-            print(f"rows added : {OFFSET}")
+            logging.info(f"rows added by far: {OFFSET}")
+
+            # using timer to not get restricted while fetching the data.
+            time.sleep(0.25)
+            logging.info("putting sleeper of 0.25 seconds...")
 
         except Exception as e:
-            print(f"exception occured at {OFFSET} : {e}")
+            logging.info(f"exception occured at {OFFSET} : {e}")
             break
-            
-        finally:
-            print(f"we have uploaded {OFFSET} data to the table")
-            

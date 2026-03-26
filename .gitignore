@@ -5,6 +5,8 @@
 *.parquet
 *.sqlite
 *.txt
+*.log
+*.
 
 # ---python---
 __pycache__/
