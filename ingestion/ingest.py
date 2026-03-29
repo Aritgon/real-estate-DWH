@@ -46,7 +46,8 @@ def fetch_data():
             # using yield to pause the data fetch operation.
             yield data
 
-            # keeping the loop for pagination.
+            # data fetching through pagination technique.
+            # the data we are fetching is distributed in rows and pages. 
             OFFSET += LIMIT
             logging.info(f"rows added by far: {OFFSET}")
 

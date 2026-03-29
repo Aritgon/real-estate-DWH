@@ -25,7 +25,7 @@ client = bigquery.Client(project=PROJECT_ID)
 def transform_and_upload(data):
     
     if not data:
-        logging.warning("received empty batch. Skipping the process.")
+        logging.warning("received empty batch. Skipping...")
         return
 
     df = pd.DataFrame(data) # turning the JSON data into a DataFrame.
