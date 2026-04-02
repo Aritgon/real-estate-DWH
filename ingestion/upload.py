@@ -3,6 +3,11 @@ import pandas as pd
 from google.cloud import bigquery
 import logging
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+# load_dotenv
+load_dotenv()
 
 # logging setup.
 logging.basicConfig(
@@ -15,9 +20,9 @@ logging.basicConfig(
 )
 
 # google client setup.
-PROJECT_ID = "project-9b661baf-6bda-4b5e-b47"
-DATASET_ID = "real_estate_raw"
-TABLE_NAME = "real_estate_raw"
+PROJECT_ID = os.getenv("GCP_PROJECT_ID")
+DATASET_ID = os.getenv("GCP_DATASET_ID_RAW")
+TABLE_NAME = os.getenv("GCP_TABLE_NAME_RAW")
 TABLE_ID = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_NAME}"
 
 client = bigquery.Client(project=PROJECT_ID)
