@@ -81,3 +81,6 @@ The project follows the Medallion Architecture:
     dbt: Implementing dbt to manage the SQL transformations with version control and automated testing.
 
     CI/CD: Setting up GitHub Actions to deploy SQL changes automatically to BigQuery.
+
+
+Something needs to be added.
