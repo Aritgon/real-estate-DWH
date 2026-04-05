@@ -25,7 +25,7 @@ DATASET_ID = os.getenv("GCP_DATASET_ID_RAW")
 TABLE_NAME = os.getenv("GCP_TABLE_NAME_RAW")
 TABLE_ID = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_NAME}"
 
-client = bigquery.Client(project=PROJECT_ID)
+client = bigquery.Client()
 
 def transform_and_upload(data):
     
