@@ -20,9 +20,9 @@ logging.basicConfig(
 )
 
 # google client setup.
-PROJECT_ID = os.getenv("GCP_PROJECT_ID")
-DATASET_ID = os.getenv("GCP_DATASET_ID_RAW")
-TABLE_NAME = os.getenv("GCP_TABLE_NAME_RAW")
+PROJECT_ID = os.getenv('GCP_PROJECT_ID')
+DATASET_ID = os.getenv('GCP_DATASET_ID_RAW')
+TABLE_NAME = os.getenv('GCP_TABLE_NAME_RAW')
 TABLE_ID = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_NAME}"
 
 client = bigquery.Client()
@@ -60,8 +60,7 @@ def transform_and_upload(data):
 
         # upload configuration.
         job_config = bigquery.LoadJobConfig(
-            create_disposition="CREATE_IF_NEEDED",
-            write_disposition="WRITE_TRUNCATE", 
+            write_disposition="WRITE_APPEND", 
             
             autodetect=True, # auto detects and creates the schema.
             schema_update_options=[

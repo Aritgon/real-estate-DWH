@@ -49,7 +49,7 @@ default_args = {
 with DAG(
     dag_id="data_pipeline_to_bgq",
     default_args=default_args,
-    start_date=datetime(2026, 4, 1),
+    start_date=datetime(2026, 4, 9),
     schedule='0 6 1,15 * *',
     template_searchpath=['/home/linuxpaglu/real_estate_DWH/airflow_home/dags'],
     catchup=False
