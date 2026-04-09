@@ -48,6 +48,7 @@ cross join p_types as p;
 
 -- drop table `project-9b661baf-6bda-4b5e-b47.real_estate_gold.fact_real_estate`;
 create or replace table `{{ params.project_id }}.{{ params.gold_dataset_id }}.fact_real_estate` (
+  unique_transaction_id INT64, -- synthetic data to recognize each row in fact table.
   serial_number INT64 not null,
   list_year INT64 not null,
   recorded_year DATE not null,
@@ -61,7 +62,7 @@ create or replace table `{{ params.project_id }}.{{ params.gold_dataset_id }}.fa
 
   sales_ratio FLOAT64,
 
-  primary key (serial_number) not enforced,
+  primary key (unique_transaction_id) not enforced,
 
   constraint fk_to_dim_property_property_id foreign key (property_id)
   references `{{ params.project_id }}.{{ params.gold_dataset_id }}.dim_property`(property_id) not enforced
@@ -69,6 +70,9 @@ create or replace table `{{ params.project_id }}.{{ params.gold_dataset_id }}.fa
 cluster by town, property_id
 as
 select
+  -- unique ID for each row.
+  GENERATE_UUID() as unique_transaction_id,
+
   a.serial_number,
   a.list_year,
   a.recorded_year,
@@ -81,7 +85,7 @@ select
   a.sale_amount,
   
   round(safe_divide(a.assessed_value, a.sale_amount), 3) as sales_ratio
-from `{{ params.project_id }}.{{ "silver_dataset_id" }}.real_estate_silver` as a
+from `{{ params.project_id }}.{{ params.silver_dataset_id }}.real_estate_silver` as a
 join `{{ params.project_id }}.{{ params.gold_dataset_id }}.dim_property` as b
   on trim(a.property_type) = trim(b.property_type)
   and trim(a.residential_type) = trim(b.residential_type)

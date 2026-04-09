@@ -60,7 +60,9 @@ def transform_and_upload(data):
 
         # upload configuration.
         job_config = bigquery.LoadJobConfig(
-            write_disposition="WRITE_APPEND", 
+            create_disposition="CREATE_IF_NEEDED",
+            write_disposition="WRITE_TRUNCATE", 
+            
             autodetect=True, # auto detects and creates the schema.
             schema_update_options=[
                 bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION # manages every schema related issues such schema being missed.
@@ -78,26 +80,26 @@ def transform_and_upload(data):
     except Exception as e:
         logging.info(f"error occured while uploading data to bgquery -> {e}")
 
-# run.
-if __name__ == "__main__":
-    # call for the fetch_data function.
+# # run.
+# if __name__ == "__main__":
+#     # call for the fetch_data function.
 
-    try:
-        from ingest import fetch_data
-    except Exception as e:
-        logging.warning(f"error occured while importing fetch_data function: {e}")
+#     try:
+#         from ingest import fetch_data
+#     except Exception as e:
+#         logging.warning(f"error occured while importing fetch_data function: {e}")
     
-    data_quantity = 0 # counter
-    logging.info("--- Data transformation & ingestion started ---")
+#     data_quantity = 0 # counter
+#     logging.info("--- Data transformation & ingestion started ---")
 
-    try:
-        for chunk in fetch_data():
-            transform_and_upload(chunk)
-            data_quantity += len(chunk)
-            logging.info(f"chunk operation : uploaded {data_quantity} rows to bigquery.")
+#     try:
+#         for chunk in fetch_data():
+#             transform_and_upload(chunk)
+#             data_quantity += len(chunk)
+#             logging.info(f"chunk operation : uploaded {data_quantity} rows to bigquery.")
 
-    except Exception as e:
-        logging.critical(f"critical failure -> pipeline crashed : {e}")
+#     except Exception as e:
+#         logging.critical(f"critical failure -> pipeline crashed : {e}")
 
-    finally:
-        logging.info(f"pipeline finished. \n approximate rows added : {data_quantity}")
+#     finally:
+#         logging.info(f"pipeline finished. \n approximate rows added : {data_quantity}")
