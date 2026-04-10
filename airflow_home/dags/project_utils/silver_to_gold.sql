@@ -16,8 +16,8 @@ create or replace table `{{ params.project_id }}.{{ params.gold_dataset_id }}.di
   primary key (property_id) not enforced
 )
 as
-with r_types as (select distinct residential_type from `{{ params.project_id }}.{{ "silver_dataset_id" }}.real_estate_silver`),
-p_types as (select distinct property_type from `{{ params.project_id }}.{{ "silver_dataset_id" }}.real_estate_silver`)
+with r_types as (select distinct residential_type from `{{ params.project_id }}.{{ params.silver_dataset_id }}.real_estate_silver`),
+p_types as (select distinct property_type from `{{ params.project_id }}.{{ params.silver_dataset_id }}.real_estate_silver`)
 select
   row_number() over () as property_id,
   p.property_type,

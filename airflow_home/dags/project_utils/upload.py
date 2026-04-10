@@ -60,9 +60,8 @@ def transform_and_upload(data):
 
         # upload configuration.
         job_config = bigquery.LoadJobConfig(
-            write_disposition="WRITE_APPEND", 
-            
             autodetect=True, # auto detects and creates the schema.
+            write_disposition="WRITE_APPEND",
             schema_update_options=[
                 bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION # manages every schema related issues such schema being missed.
             ]
