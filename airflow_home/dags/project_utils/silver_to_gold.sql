@@ -70,8 +70,9 @@ create or replace table `{{ params.project_id }}.{{ params.gold_dataset_id }}.fa
 cluster by town, property_id
 as
 select
-  -- unique ID for each row.
-  GENERATE_UUID() as unique_transaction_id,
+  -- unique ID for each row. (x) removed generate_UUID() because of an coerce issue from google API
+  -- GENERATE_UUID() as unique_transaction_id,
+  row_number() over() as unique_transaction_id, -- using window function
 
   a.serial_number,
   a.list_year,

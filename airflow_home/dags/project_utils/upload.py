@@ -50,9 +50,6 @@ def transform_and_upload(data):
         logging.info(f"error occured {e}")
         return
 
-    finally:
-        logging.info(f"\n Cleaned rows getting into bigquery : {len(df)}")
-
     # --- bigquery upload ---
     # uploading the data to bigquery dataset and table.
     try:
@@ -60,11 +57,10 @@ def transform_and_upload(data):
 
         # upload configuration.
         job_config = bigquery.LoadJobConfig(
-            autodetect=True, # auto detects and creates the schema.
+            autodetect=True,
             write_disposition="WRITE_APPEND",
-            schema_update_options=[
-                bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION # manages every schema related issues such schema being missed.
-            ]
+            schema_update_options=bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION 
+            # adds another columns to the schema if another field pops up in the data
         )
 
         # this will upload the data from dataframe to bgq dataset.
