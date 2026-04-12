@@ -2,7 +2,6 @@
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
-from airflow.providers.google.cloud.operators.bigquery import BigQueryColumnCheckOperator, BigQueryValueCheckOperator
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import logging
@@ -41,8 +40,8 @@ def fetch_and_upload():
 default_args = {
     'owner' : "arit gon",
     'depends_on_past' : False,
-    # 'retries' : 2,
-    # 'retry_delay' : timedelta(minutes=5)
+    'retries' : 2,
+    'retry_delay' : timedelta(minutes=5)
 }
 
 # Phase 2: DAG manager
