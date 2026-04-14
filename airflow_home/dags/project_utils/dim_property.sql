@@ -12,16 +12,38 @@ create or replace table `{{ params.project_id }}.{{ params.gold_dataset_id }}.di
     property_type STRING,
     residential_type STRING,
 
-    primary key (project_id) not enforced
-) AS
-with cte (
+    -- primary key.
+    primary key (property_id) not enforced
+);
+
+-- MERGE operations for smoother data ingestions and data quality.
+MERGE `{{ params.project_id }}.{{ params.gold_dataset_id }}.dim_property` as P
+USING (
+    with cte as (
     select
         distinct property_type, residential_type
-    from `{{ params.project_id }}.{{ params.silver_dataset_id }}.real_estate_silver`
-)
+    from `{{ params.project_id }}.{{ params.silver_dataset_id }}.real_estate_silver`)
 select 
     -- synthetic key as primary key.
-    row_number() as (order by property_type, residential_type) as property_id,
+    FARM_FINGERPRINT(concat(safe_cast(property_type as STRING), safe_cast(residential_type as STRING))),
     property_type,
     residential_type
-from cte;
+from cte
+) as S
+-- joining columns.
+ON P.property_type = S.property_type and P.residential_type = S.residential_type
+
+-- Update policy when columns match.
+WHEN MATCHED THEN
+    UPDATE SET
+    P.property_type = S.property_type,
+    P.residential_type = S.residential_type
+
+WHEN NOT MATCHED THEN
+INSERT (property_id, property_type, residential_type)
+values (
+    FARM_FINGERPRINT(concat(safe_cast(S.property_type as STRING), safe_cast(S.residential_type as STRING))),
+    S.property_type,
+    S.residential_type
+);
+

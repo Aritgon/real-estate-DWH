@@ -76,38 +76,30 @@ with DAG(
         }
     )
 
-    # # data checks before commiting cleaned data to the gold layer.
-    # quality_check_columns = BigQueryColumnCheckOperator(
-    #     task_id="columnar_data_check",
-    #     table=f"{os.getenv('GCP_PROJECT_ID')}.{os.getenv('GCP_DATASET_ID_SILVER')}.real_estate_silver",
-    #     column_mapping={
-    #         "serial_number" : {"null_check" : {"equal_to": 0}}, # no more null serial number.
-
-    #         "assessed_value" : {
-    #             "max" : {"less_than" : 2250001},
-    #             "min" : {"greater_than" : 2000}
-    #         },
-    #         "sale_amount" : {
-    #             "max" : {"less_than" : 3050001},
-    #             "min" : {"greater_than" : 2000}
-    #         },
-    #         "sales_ratio": {
-    #             "max": {"less_than": 1.41},
-    #             "min": {"greater_than": 0} 
-    #         }
-    #     },
-    #     use_legacy_sql=False
-    # )
-
-
-    # Task 3 : Silver -> gold (Implementing star schema for a complete data warehouse)
-    silver_to_gold = BigQueryInsertJobOperator(
-        task_id="silver_to_gold",
+    #Task 3 : Silver -> gold layer (dim_property)
+    silver_to_dim = BigQueryInsertJobOperator(
+        task_id="gold_layer_dim_table_creation",
         configuration={
             "query" : {
-                "query" : "{% include 'project_utils/silver_to_gold.sql' %}",
-                "useLegacySql": False,
-            },
+                "query" : "{% include 'project_utils/dim_property.sql' %}",
+                "useLegacySql" : False
+            },    
+        },
+        params={
+            "project_id": os.getenv("GCP_PROJECT_ID"),
+            "silver_dataset_id": os.getenv("GCP_DATASET_ID_SILVER"),
+            "gold_dataset_id": os.getenv("GCP_DATASET_ID")
+        }
+    )
+
+    # Task 4 : Silver to gold layer (fact_real_estate)
+    silver_to_fact = BigQueryInsertJobOperator(
+        task_id="gold_layer_fact_table_creation",
+        configuration={
+            "query" : {
+                "query" : "{% include 'project_utils/fact_real_estate.sql' %}",
+                "useLegacySql" : False
+            },    
         },
         params={
             "project_id": os.getenv("GCP_PROJECT_ID"),
@@ -117,4 +109,4 @@ with DAG(
     )
 
 # workflow direction and path.
-fetch_upload >> raw_to_silver >> silver_to_gold
+fetch_upload >> raw_to_silver >> silver_to_dim >> silver_to_fact
