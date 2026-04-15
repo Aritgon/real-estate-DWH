@@ -1,7 +1,7 @@
 /*
     This task to create a dim property table in the gold layer of this project.
 
-    In airflow worker scheduler, this script should run fast before the fact table creation to follow
+    In airflow worker scheduler, this script should run first before fact table to follow
     normal data warehouse work ethics.
 
     example workflow manager : api_fetch >> raw >> silver >> dim_property >> fact_real_estate
