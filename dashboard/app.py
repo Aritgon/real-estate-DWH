@@ -66,7 +66,6 @@ def property_type():
         select
             d.property_type,
             d.residential_type,
-            d.master_property_type,
             count(*) as sales_frequency,
             round(avg(f.assessed_value), 2) as avg_assessed_value,
             round(avg(f.sale_amount), 2) as avg_sale_amount,
@@ -74,9 +73,8 @@ def property_type():
         from {FACT_TABLE_ID} as f
         join {DIM_TABLE_ID} as d on d.property_id = f.property_id
         where d.property_type != 'unspecified' and 
-        d.residential_type != 'unspecified' and 
-        d.master_property_type != 'unspecified'
-        group by d.property_type, d.residential_type, d.master_property_type
+        d.residential_type != 'unspecified'
+        group by d.property_type, d.residential_type
     """
 
     return client.query(query).to_dataframe()
@@ -92,13 +90,7 @@ st.bar_chart(df1, x = 'property_type', y = ['avg_assessed_value', 'avg_sale_amou
 st.subheader("average assessed value vs. sale amount by property type")
 st.bar_chart(df1, x = 'residential_type', y = ['avg_assessed_value', 'avg_sale_amount'], stack = False)
 
-# visual of avg sales ratio distribution of master property type
-st.subheader("Master property type : average sales ratio distribution")
-st.write(f"master property type -> property type + residential type")
-st.bar_chart(df1, x = 'master_property_type', y = 'avg_sales_ratio', color='#ffaa00', stack=False)
-
 # location wise dashboard.
-
 @st.cache_data
 def town_wise_data():
     query = f"""
