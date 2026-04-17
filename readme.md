@@ -25,5 +25,5 @@ The whole architechture is working as a `datalake` and also a `data filtering ma
 
 > Image below shows the data flow path of the pipeline
 
-![Data Flow Diagram]("/home/linuxpaglu/real_estate_DWH/pngs/real estate project flow diagram.png")
+![Data flow diagram](/home/linuxpaglu/real_estate_DWH/pngs/real estate project flow diagram.png)
 
