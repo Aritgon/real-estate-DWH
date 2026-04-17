@@ -59,7 +59,7 @@ ON T.serial_number = S.serial_number
 AND T.list_year = S.list_year
 AND T.recorded_year = S.recorded_year
 
--- update policy setup if column policy is matching (key columns matches but desc. data mismatched)
+-- update policy setup if column policy is matching (key columns matches but desc. data is mismatched)
 WHEN MATCHED AND (T.town != S.town or T.address != S.address 
 or T.assessed_value != S.assessed_value or T.sale_amount != S.sale_amount) THEN
   UPDATE SET
@@ -70,7 +70,8 @@ or T.assessed_value != S.assessed_value or T.sale_amount != S.sale_amount) THEN
 
 -- update policy if new data arrives.
 WHEN NOT MATCHED THEN
-  INSERT (utid, serial_number, list_year, recorded_year, town, address, property_id, assessed_value, sale_amount, sales_ratio)
+  INSERT (utid, serial_number, list_year, recorded_year, town, address, 
+  property_id, assessed_value, sale_amount, sales_ratio)
   VALUES (
     FARM_FINGERPRINT(concat(safe_cast(S.serial_number as STRING), safe_cast(S.list_year as STRING), S.town)),
     S.serial_number,
