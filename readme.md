@@ -25,7 +25,7 @@ The whole architechture is working as a `datalake` and also a `data filtering ma
 
 > Image below shows the data flow path of the pipeline:
 
-<img src="/home/linuxpaglu/real_estate_DWH/pngs/real estate project flow diagram.png" width="600" alt="Data pipeline structure">
+<img src="/real_estate_DWH/pngs/real estate project flow diagram.png" width="600" alt="Data pipeline structure">
 
 ### Description about the workflow:
 ```
@@ -36,7 +36,7 @@ The whole architechture is working as a `datalake` and also a `data filtering ma
 3. gold layer implementation thorough task 3 & 4 to create fact and dimensional tables and established relationships between them.
 ```
 > Apache airflow tasks workflow:
-<img src="/home/linuxpaglu/real_estate_DWH/pngs/data_pipeline_to_bgq-graph(1).png" width="400" alt ="apache airflow tasks flow">
+<img src="/real_estate_DWH/pngs/data_pipeline_to_bgq-graph(1).png" width="400" alt ="apache airflow tasks flow">
 
 > Description about the airflow processes:
 
