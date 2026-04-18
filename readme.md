@@ -39,17 +39,17 @@ The whole architechture is working as a `datalake` and also a `data filtering ma
 
 > Description about the airflow processes:
 
-1. fetching_started
-    1. Most heavy task among all tasks in this project. This fetches the data from the SODA 2.0 API and uploads the data in chunksize (50000 rows) portions to the bigquery raw layer dataset.
+1. **fetching_started**
+    * Most **heavy task** among all tasks in this project. This fetches the data from the `SODA 2.0 API` and uploads the data in chunksize (50000 rows) portions to the bigquery `raw` layer dataset.
 
-2. raw_to_silver_cleanup
-    1. cleans the data for gold layer to have perfect data (null free, above 0 etc) to design star schema.
+2. **raw_to_silver_cleanup**
+    * cleans the data for `gold layer` to have perfect data (null free, above 0 etc) to **design star schema**.
 
-3. gold_layer_dim_table_creation
-    1. A SQL script with SCD-1 implementation to have property and residential based dimension table.
+3. **gold_layer_dim_table_creation**
+    * A `SQL script` with `SCD-1 implementation` to have property and residential based dimension table.
 
-4. gold_layer_fact_table_creation
-    1. A SQL script with SCD-1 implementation. In the SCD-1 implementation, it is approved data addition if descriptive data doesn't matched but frequent columns such as "serial_number", "list_year" etc does have matching entries.
+4. **gold_layer_fact_table_creation**
+    * A `SQL script` with SCD-1 implementation. In the SCD-1 implementation, it is approved data addition if **descriptive data doesn't matched** but **frequent columns such as "serial_number", "list_year" etc does have matching entries**.
 
 ----
 
