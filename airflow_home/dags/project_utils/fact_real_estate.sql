@@ -49,6 +49,7 @@ join `{{ params.project_id }}.{{ params.gold_dataset_id }}.dim_property` as b
   on trim(a.property_type) = trim(b.property_type)
   and trim(a.residential_type) = trim(b.residential_type)
 where
+  -- numerical filters.
   a.assessed_value between 2000 and 2250000
   and a.sale_amount between 2000 and 3050000
   and safe_divide(a.assessed_value, a.sale_amount) between 0 and 1.4

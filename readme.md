@@ -8,13 +8,20 @@
 ## Description:
 > An **automated data pipeline**, which fetches messy real estate data from connecticut `SODA 2.0` API and uploads the data to a `bigquery` warehouse. A well-curated `medallion architecture` filters the raw data and establishes `star schema` in the `gold` layer of the warehouse to have cleaned, non-duplicate data for dashboard designing.
 
-## Project features:
-1. Fetches raw data from the **API** and puts it directly to a **bigquery cloud warehouse**
-2. **Implementation of medallion structure** :-
-    1. `raw layer` -> Direct data upload from the API. Working as a `data lake`.
-    2. `silver layer` -> Sets the data free from *numerical value outliers*, *null values*, *random object anomalies* etc and prepares the data for gold layer.
-    3. `gold layer` ->  Implemented a simple `star schema` for better dashboard performance & **filtering**
-3. Yearly and place wise `assessed value` and `sale amount` tracker using **streamlit**
+## Project Features
+
+This designed pipeline is responsible to collect raw data from the API to filter out **junk** data and create an analytics-ready `star schema vault`. The following are the main features of the project -
+
+1. Fetches data from `SODA 2.0` API and loads it straight into Google Bigquery by Bigquery specific functions such as `JobConfig` to configure the data ingestion and `load_table_from_dataframe` to upload the as **pandas dataframe**.
+
+2. Implements a Medallion architecture with three clear layers:
+    1. **Raw layer**: Acts as a simple **data lake**. It stores the data exactly as it comes from the `SODA 2.0 API`, without any changes and filters.
+
+    2. **Silver layer**: Cleans the data by removing *null values*, fixing *random object anomalies*, and *standardizing formats*. This layers makes the data usable and ready for `star schema implementation`.
+
+    3. **Gold layer**: Builds a clean and simple **star schema**. This makes querying faster and allows smooth filtering when building dashboards.
+
+3. Creates easy-to-use dashboards that let you track **assessed values and sale amounts** over the **years** and across different **places**.
 
 ## Data flow diagram
 
@@ -23,12 +30,23 @@
 
 ### Description about the workflow:
 
-1. API data fetch operation & bigquery raw data upload thorugh airflow **task 1**
+1. API fetch operation from `SODA 2.0 API` using python and libraries such as `pandas`, `requests` to upload the data to a **bigquery** dataset in `RAW` layer
 
-2. Raw to silver layer **data transformation** thorugh `SQL` logic (removing outlier numerical values, fixed object values and cleaned data's from columns such as town, address) thorough airflow **task 2**
+2. Later the following filter was introduced to get `~1%` of junk data filtered out in the `SILVER` layer
+    * ```
+        where assessedvalue is not null and saleamount is not null
+        and safe_cast(assessedvalue as FLOAT64) > 0 and safe_cast(saleamount as FLOAT64) > 0
+        and parse_date('%Y-%m-%d', LEFT(daterecorded, 10)) between '2001-01-01' and current_date()
+        and safe_cast(listyear as INT64) <= extract(year from (parse_date('%Y-%m-%d', LEFT(daterecorded, 10))));
+    ```
+3. In the final stage or `GOLD` layer, A simply structured **star schema** was implemented to have better **data profiling** and **filtering capabilities** for `BI` softwares. I have also put filter out *outliers* and data anomalies that could've skewed the analysis
+    * ```
+    a.assessed_value between 2000 and 2250000
+    and a.sale_amount between 2000 and 3050000
+    and safe_divide(a.assessed_value, a.sale_amount) between 0 and 1.4
+    ```
 
-3. **gold layer** implementation through **task 3 & 4** to create fact and dimensional tables and established relationships between them
-
+    * This filter removes around **~8.5%** of junk data from the `SILVER` layer
 
 > **Apache airflow** tasks workflow:
 <img src="pngs/data_pipeline_to_bgq-graph(1).png" height="2400" width="1000" alt ="apache airflow tasks flow">
@@ -36,16 +54,16 @@
 > Description about the airflow processes:
 
 1. **fetching_started**
-    * Most **heavy task** among all tasks in this project. This fetches the data from the `SODA 2.0 API` and uploads the data in chunksize (50000 rows) portions to the bigquery `raw` layer dataset.
+    * *Heaviest task among all tasks*. Fetches the `real estate data` from the `API` and stores it into the `raw` stage of **bigquery**
 
 2. **raw_to_silver_cleanup**
-    * cleans the data for `gold layer` to have perfect data (null free, above 0 etc) to **design star schema**.
+    * Extracts `clean` data from `raw` layer by removing around **~1%** of junk data
 
 3. **gold_layer_dim_table_creation**
-    * A `SQL script` with `SCD-1 implementation` to have property and residential based dimension table.
+    * An idempotent `SQL script` to create a `dim` table. In this layer, we have also implemented `slowly changing dimension type 1` for better data entry and duplicate safe approach
 
 4. **gold_layer_fact_table_creation**
-    * A `SQL script` with SCD-1 implementation. In the SCD-1 implementation, it is approved data addition if **descriptive data doesn't matched** but **frequent columns such as "serial_number", "list_year" etc does have matching entries**.
+    * An idempotent `SQL script` with `slowly changing dimension type 1` implementation to create the `fact` table. This query strongly focuses on `descriptive` data ingestion
 ----
 
 ## Problems solved:
