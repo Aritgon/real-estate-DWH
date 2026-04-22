@@ -14,9 +14,9 @@ An **automated ELT pipeline** designed to ingest, clean, and model `real estate 
 * **Languages/Libraries**: Python, requests, Pandas, SQL (BigQuery)
 * **Modeling**: Medallion Architecture (Bronze, Silver, Gold), Star Schema, SCD Type 1
 
-## setup guide
+### setup guide
+[Follow this setup guide to run this project on your machine](setup.md)
 
-Follow the structured guideline from this [setup guide](setup.md)
 ---
 
 ## Pipeline flow diagram & project features:
