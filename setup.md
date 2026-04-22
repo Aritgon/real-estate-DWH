@@ -3,7 +3,7 @@
 ---
 ## ---- FIRST and FOREMOST task to be completed  ----
 
-1. Install a `PYTHON ENVIRONMENT` in your machine. Run this block of code to install the required packages and a python environment - 
+1. Install a `PYTHON ENVIRONMENT` in your machine. Run this block of code to install the required packages and the environment - 
 
 ```
 python -m venv venv
@@ -12,17 +12,19 @@ pip install -r requirements.txt
 ```
 2. This above script will install `google cloud` and it's supporting libraries along with `bigquery`.
 
-After that run this code to initiate `google auth login` in your machine.
+After that run this code to initiate `google authentication login` in your machine.
 
 ``` 
     gcloud auth application-default login
 ```
+
 **please ensure you have `GOOGLE CLOUD SDK` installed in your machine**, if not install it from this link -
 
 [link to download to Gcloud CLI](https://docs.cloud.google.com/sdk/docs/install-sdk)
 
 --- 
 
+## ---- Second Task : AIRFLOW home & user setup ----
 
 1. Setup the `HOME` directory for `airflow` files
 2. Initiate the airflow database
@@ -47,7 +49,7 @@ airflow users create \\
 
 ### If you face a user creation issue, follow this next step.
 
-1. Run this code to let airflow automatically fix hassle for you.
+1. Run the following code to fix the user creation hassle for the project.
 
 ```
 airflow standalone
@@ -71,7 +73,7 @@ airflow webserver -p 8080
 
 4. Save it.
 5. Copy the port or `ctrl + click` the link in the terminal to access airflow UI.
- 
+
 ---
 ## ---- Bigquery warehouse setup ----
 
