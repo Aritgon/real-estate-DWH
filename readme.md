@@ -9,8 +9,7 @@
 > An **automated data pipeline**, which fetches messy real estate data an API and uploads the data to a `bigquery` warehouse. A well-curated `medallion architecture` filters the raw data and establishes `star schema` to have cleaned, non-duplicate data for dashboard designing.
 
 ## setup guide
-> Follow the guideline to setup the project on your own machine.
-<a href="setup.md">
+Follow the structured guideline from this [setup markdown file](setup.md)
 
 ## Project Features
 
@@ -64,6 +63,5 @@ This designed pipeline is responsible to collect raw data from the API to filter
 
 - A simple yet intuitive `star schema` has been setup to get more filtering capabilities without dropping any bits performance for BI softwares.
 ----
-
 
 

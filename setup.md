@@ -3,7 +3,7 @@
 ---
 ## ---- FIRST and FOREMOST task to be completed  ----
 
-1. Install a `PYTHON ENVIRONMENT` in your machine and run this block of code after that - 
+1. Install a `PYTHON ENVIRONMENT` in your machine. Run this block of code to install the required packages and a python environment - 
 
 ```
 python -m venv venv
@@ -17,12 +17,12 @@ After that run this code to initiate `google auth login` in your machine.
 ``` 
     gcloud auth application-default login
 ```
-**Before please ensure you have `GOOGLE CLOUD SDK` installed in your machine**
+**please ensure you have `GOOGLE CLOUD SDK` installed in your machine**, if not install it from this link -
 
-[!link]<a href="https://cloud.google.com/sdk">
+[link to download to Gcloud CLI](https://docs.cloud.google.com/sdk/docs/install-sdk)
 
 --- 
-## ---- SECOND TASK : AIRFLOW SETUP ----
+
 
 1. Setup the `HOME` directory for `airflow` files
 2. Initiate the airflow database
@@ -54,18 +54,24 @@ airflow standalone
 ```
 
 ---
-## ---- AIRFLOW ACCOUNT AND PROJECT PATH SETUP ----
+## ---- Second task : AIRFLOW ACCOUNT AND PROJECT PATH SETUP ----
 
 ### Configure GCP Connection
 
-1. Launch the Airflow UI: airflow webserver -p 8080.
-2. Go to Admin -> Connections.
+1. Launch the Airflow UI: 
+```
+airflow webserver -p 8080
+```
+2. Go to **Admin** -> **Connections**.
 3. Create a new connection:
 
-    * Connection Id: google_cloud_default
-    * Connection Type: Google Cloud
-    * Project Id: Your GCP Project ID.
+    * **Connection Id**: google_cloud_default
+    * **Connection Type**: Google Cloud
+    * **Project Id**: Your GCP Project ID.
 
+4. Save it.
+5. Copy the port or `ctrl + click` the link in the terminal to access airflow UI.
+ 
 ---
 ## ---- Bigquery warehouse setup ----
 
