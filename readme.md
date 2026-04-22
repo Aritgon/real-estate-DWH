@@ -9,13 +9,14 @@
 An **automated ELT pipeline** designed to ingest, clean, and model `real estate data` from the `SODA 2.0 API` into a **production-ready** `Star Schema` within Google `BigQuery`. This project focuses on `high data integrity` and cost-effective **transformation** using a **Medallion Architecture**.
 
 ### Technical Stack
-    * **Orchestration**: Apache Airflow
-    * **Data Warehouse**: Google BigQuery
-    * **Languages/Libraries**: Python, requests, Pandas, SQL (BigQuery)
-    * **Modeling**: Medallion Architecture (Bronze, Silver, Gold), Star Schema, SCD Type 1
+* **Orchestration**: Apache Airflow
+* **Data Warehouse**: Google BigQuery
+* **Languages/Libraries**: Python, requests, Pandas, SQL (BigQuery)
+* **Modeling**: Medallion Architecture (Bronze, Silver, Gold), Star Schema, SCD Type 1
 
 ## setup guide
-Follow the structured guideline from this [setup markdown file](setup.md)
+
+Follow the structured guideline from this [setup guide](setup.md)
 ---
 
 ## Pipeline flow diagram & project features:
