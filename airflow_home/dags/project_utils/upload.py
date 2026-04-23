@@ -58,7 +58,7 @@ def transform_and_upload(data):
         # upload configuration.
         job_config = bigquery.LoadJobConfig(
             autodetect=True,
-            write_disposition="WRITE_APPEND",
+            write_disposition="WRITE_APPEND", # "WRITE_TRUNCATE" -> curbs down the table or warehouse from the data.
             schema_update_options=bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION 
             # adds another columns to the schema if another field pops up in the data
         )

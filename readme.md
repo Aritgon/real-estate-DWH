@@ -22,7 +22,7 @@ An **automated ELT pipeline** designed to ingest, clean, and model `real estate 
 ## Pipeline flow diagram & project features:
 
 > Image below shows the **data flow path** of the pipeline:
-<img src="pngs/real estate project flow diagram.png" height="2400" width="1000" alt="Data pipeline structure">
+<img src="pngs/real estate project flow diagram.png" height="2400" width="1200" alt="Data pipeline structure">
 
 ## Project Features & Problems Solved :
 
@@ -32,7 +32,6 @@ An **automated ELT pipeline** designed to ingest, clean, and model `real estate 
 2. **Medallion Structure**:
     * **Raw Layer**: Functions as a `data lake`, storing **API data** in its original state without any filters applied.
     * **Silver Layer**: Cleans the data by **removing nulls**, fixing **object anomalies**, and **standardizing formats** for schema implementation.
-
     * **Gold Layer**: Implements a `star schema` to optimize **query speed** and **dashboard filtering**.
 
 3. **Automation**: The pipeline is fully **automated** using `Apache Airflow`, which triggers data fetching operations on the `1st` and `15th` of `every month`.
@@ -49,10 +48,10 @@ An **automated ELT pipeline** designed to ingest, clean, and model `real estate 
     and safe_cast(assessedvalue as FLOAT64) > 0 and safe_cast(saleamount as FLOAT64) > 0
     -- filtering date.
     and parse_date('%Y-%m-%d', LEFT(daterecorded, 10)) between '2001-01-01' and current_date()
-    and safe_cast(listyear as INT64) <= extract(year from (parse_date('%Y-%m-%d', LEFT(daterecorded, 10))));
+    and safe_cast(listyear as INT64) <= extract(year from (parse_date('%Y-%m-%d', LEFT(daterecorded, 10))))
 ```
 
-> This filter removes `~8.5%` of data by removing numerical outliers from the `silver` layer:
+> This filter removes `~8.5%` of data by removing numerical outliers and anomalies from the `silver` layer:
 
 ```
     a.assessed_value between 2000 and 2250000
@@ -67,21 +66,21 @@ An **automated ELT pipeline** designed to ingest, clean, and model `real estate 
 4. **Performance**: The `star schema` setup provides **high filtering capabilities** for **BI software** without sacrificing performance or query speed.
 
 
-> **Apache airflow** tasks workflow:
-<img src="pngs/data_pipeline_to_bgq-graph(1).png" height="2400" width="1000" alt ="apache airflow tasks flow">
+### **Apache airflow** tasks workflow:
+<img src="pngs/data_pipeline_to_bgq-graph(1).png" height="3200" width="1200" alt ="apache airflow tasks flow">
 
 > Description about the airflow processes:
 
 1. **fetching_started**
-    * **Heaviest task of the workflow**. Fetches the `real estate data` from the `API` and stores it into the `raw` stage of **bigquery**
+    * **Heaviest task of the workflow**. Fetches the `real estate data` from the `API` and stores it into the `raw` stage of **bigquery**.
 
 2. **raw_to_silver_cleanup**
-    * Extracts `clean` data from `raw` layer by removing around **~1%** of junk data
+    * Extracts `clean` data from `raw` layer by removing around **~1%** of junk data.
 
 3. **gold_layer_dim_table_creation**
-    * An idempotent `SQL script` to create a `dim` table. In this layer, we have also implemented `slowly changing dimension type 1` for better data entry and duplicate safe approach
+    * An idempotent `SQL script` to create a `dim` table. In this layer, we have also implemented `slowly changing dimension type 1` for better data entry and duplicate safe approach.
 
 4. **gold_layer_fact_table_creation**
-    * An idempotent `SQL script` with `slowly changing dimension type 1` implementation to create the `fact` table. This query strongly focuses on `descriptive` data ingestion
----
+    * An idempotent `SQL script` with `slowly changing dimension type 1` implementation to create the `fact` table. This query strongly focuses on `descriptive` data ingestion.
 
+---
