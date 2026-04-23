@@ -4,7 +4,7 @@
 *.xlsx
 *.parquet
 *.sqlite
-*.txt
+# *.txt
 *.log
 *.
 .directory
