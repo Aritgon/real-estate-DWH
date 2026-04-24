@@ -22,7 +22,42 @@ After that run this code to initiate `google authentication login` in your machi
 
 [link to download to Gcloud CLI](https://docs.cloud.google.com/sdk/docs/install-sdk)
 
---- 
+*************************************************************************************
+#### Install Gcloud CLI tool (Terminal way) 
+
+Run this blocks of codes one by one -
+
+* update packages and dependency installation
+```
+sudo apt-get update
+sudo apt-get install apt-transport-https ca-certificates gnupg curl -y
+```
+
+* Add google cloud public key
+```
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+```
+
+* Add the Gcloud CLI repository
+```
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+```
+
+* Install the SDK
+```
+sudo apt-get update && sudo apt-get install google-cloud-sdk -y
+```
+
+* Initialize
+
+```
+gcloud init
+```
+
+> Log in with your gmail so that every project can be opened under that mail and used for future project building. 
+
+
+---
 
 ## ---- Second Task : AIRFLOW home & user setup ----
 
