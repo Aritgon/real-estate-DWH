@@ -12,7 +12,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("/home/linuxpaglu/real_estate_DWH/pipeline_main.log"),
+        logging.FileHandler("/home/arit/real-estate-DWH/pipeline_main.log"),
         logging.StreamHandler()
     ]
 )

@@ -50,19 +50,21 @@ with DAG(
     default_args=default_args,
     start_date=datetime(2026, 4, 9),
     schedule='0 6 1,15 * *',
-    template_searchpath=['/home/linuxpaglu/real_estate_DWH/airflow_home/dags'],
+    template_searchpath=['/home/arit/real-estate-DWH/dags'],
     catchup=False
 ) as dag:
 
     # Task 1 : fetch operation & bigquery upload in raw layer of our medallion layer.
     fetch_upload = PythonOperator(
         task_id = 'fetching_started',
+        # gcp_conn_id = 'google_cloud_default',
         python_callable=fetch_and_upload
     )
 
     # Task 2 : raw -> silver data upload.
     raw_to_silver = BigQueryInsertJobOperator(
         task_id="raw_to_silver_cleanup",
+        # gcp_conn_id="google_cloud_default",
         configuration={
             "query" : {
                 "query": "{% include 'project_utils/transform_to_silver.sql' %}",
@@ -79,6 +81,7 @@ with DAG(
     #Task 3 : Silver -> gold layer (dim_property)
     silver_to_dim = BigQueryInsertJobOperator(
         task_id="gold_layer_dim_table_creation",
+        # gcp_conn_id="google_cloud_default",
         configuration={
             "query" : {
                 "query" : "{% include 'project_utils/dim_property.sql' %}",
@@ -95,6 +98,7 @@ with DAG(
     # Task 4 : Silver to gold layer (fact_real_estate)
     silver_to_fact = BigQueryInsertJobOperator(
         task_id="gold_layer_fact_table_creation",
+        # gcp_conn_id="google_cloud_default",
         configuration={
             "query" : {
                 "query" : "{% include 'project_utils/fact_real_estate.sql' %}",

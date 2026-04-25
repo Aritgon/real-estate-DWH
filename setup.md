@@ -25,7 +25,7 @@ After that run this code to initiate `google authentication login` in your machi
 *************************************************************************************
 #### Install Gcloud CLI tool (Terminal way) 
 
-Run this blocks of codes one by one -
+Run this blocks of code one by one -
 
 * update packages and dependency installation
 ```
@@ -48,7 +48,7 @@ echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.clou
 sudo apt-get update && sudo apt-get install google-cloud-sdk -y
 ```
 
-* Initialize
+* Initialization
 
 ```
 gcloud init
@@ -56,6 +56,10 @@ gcloud init
 
 > Log in with your gmail so that every project can be opened under that mail and used for future project building. 
 
+1. Run this code to complete the gcloud login
+```
+    gcloud auth login
+```
 
 ---
 
@@ -67,8 +71,23 @@ gcloud init
 > run this block of code :
 
 ```
-export AIRFLOW_HOME=$(pwd)/airflow
+export AIRFLOW_HOME=$(pwd)/dags
 airflow migrate db
+```
+
+#### OR
+
+1. setup the airflow_home address in `.bashrc` file.
+```
+nano ~/.bashrc
+
+export AIRFLOW_HOME=$(pwd)/dags #(You can also write the full path of the dag folder)
+```
+
+2. then save the file and write -
+
+```
+source ~/.bashrc
 ```
 
 3. Create Airflow User
@@ -84,11 +103,22 @@ airflow users create \\
 
 ### If you face a user creation issue, follow this next step.
 
-1. Run the following code to fix the user creation hassle for the project.
+> This issue generally occurs because of airflow versions above 3.0. 
+
+1. Run the following code in your terminal to fix the user creation hassle for the project.
 
 ```
-airflow standalone
+    pip install apache-airflow-providers-fab
 ```
+
+2. Then set the following context in the config file of airflow such as 1 `airflow.cfg`
+
+```
+    auth_manager = airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+```
+
+**Now you can create the user as it was written in the  `3rd` pointer of ```second task``` section**
+
 
 ---
 ## ---- Second task : AIRFLOW ACCOUNT AND PROJECT PATH SETUP ----

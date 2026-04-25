@@ -14,7 +14,7 @@ logging.basicConfig(
     level=logging.INFO,
     format= '%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("/home/linuxpaglu/real_estate_DWH/pipeline_main.log"),
+        logging.FileHandler("/home/arit/real-estate-DWH/pipeline_main.log"),
         logging.StreamHandler()
     ]
 )
@@ -58,7 +58,7 @@ def transform_and_upload(data):
         # upload configuration.
         job_config = bigquery.LoadJobConfig(
             autodetect=True,
-            write_disposition="WRITE_APPEND", # "WRITE_TRUNCATE" -> curbs down the table or warehouse from the data.
+            write_disposition="WRITE_APPEND",
             schema_update_options=bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION 
             # adds another columns to the schema if another field pops up in the data
         )
@@ -96,4 +96,4 @@ def transform_and_upload(data):
 #         logging.critical(f"critical failure -> pipeline crashed : {e}")
 
 #     finally:
-#         logging.info(f"pipeline finished. \n approximate rows added : {data_quantity}")
+#         logging.info(f"pipeline finished. \n approximate rows added : {data_quantity}")g
