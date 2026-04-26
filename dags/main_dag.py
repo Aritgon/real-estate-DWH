@@ -57,8 +57,6 @@ with DAG(
     # Task 1 : fetch operation & bigquery upload in raw layer of our medallion layer.
     fetch_upload = PythonOperator(
         task_id = 'fetching_started',
-        gcp_conn_id = "google_cloud_default",
-        location="asia-south1",
         python_callable=fetch_and_upload
     )
 
@@ -94,7 +92,7 @@ with DAG(
         params={
             "project_id": os.getenv("GCP_PROJECT_ID"),
             "silver_dataset_id": os.getenv("GCP_DATASET_ID_SILVER"),
-            "gold_dataset_id": os.getenv("GCP_DATASET_ID")
+            "gold_dataset_id": os.getenv("GCP_DATASET_ID_GOLD")
         }
     )
 
@@ -112,7 +110,7 @@ with DAG(
         params={
             "project_id": os.getenv("GCP_PROJECT_ID"),
             "silver_dataset_id": os.getenv("GCP_DATASET_ID_SILVER"),
-            "gold_dataset_id": os.getenv("GCP_DATASET_ID")
+            "gold_dataset_id": os.getenv("GCP_DATASET_ID_GOLD")
         }
     )
 
