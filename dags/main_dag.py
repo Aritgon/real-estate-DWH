@@ -40,7 +40,7 @@ def fetch_and_upload():
 default_args = {
     'owner' : "arit gon",
     'depends_on_past' : False,
-    'retries' : 2,
+    'retries' : 1,
     'retry_delay' : timedelta(minutes=5)
 }
 
@@ -57,14 +57,16 @@ with DAG(
     # Task 1 : fetch operation & bigquery upload in raw layer of our medallion layer.
     fetch_upload = PythonOperator(
         task_id = 'fetching_started',
-        # gcp_conn_id = 'google_cloud_default',
+        gcp_conn_id = "google_cloud_default",
+        location="asia-south1",
         python_callable=fetch_and_upload
     )
 
     # Task 2 : raw -> silver data upload.
     raw_to_silver = BigQueryInsertJobOperator(
         task_id="raw_to_silver_cleanup",
-        # gcp_conn_id="google_cloud_default",
+        gcp_conn_id="google_cloud_default",
+        location="asia-south1",
         configuration={
             "query" : {
                 "query": "{% include 'project_utils/transform_to_silver.sql' %}",
@@ -79,9 +81,10 @@ with DAG(
     )
 
     #Task 3 : Silver -> gold layer (dim_property)
-    silver_to_dim = BigQueryInsertJobOperator(
+    silver_to_gold_dim_property = BigQueryInsertJobOperator(
         task_id="gold_layer_dim_table_creation",
-        # gcp_conn_id="google_cloud_default",
+        gcp_conn_id="google_cloud_default",
+        location="asia-south1",
         configuration={
             "query" : {
                 "query" : "{% include 'project_utils/dim_property.sql' %}",
@@ -96,9 +99,10 @@ with DAG(
     )
 
     # Task 4 : Silver to gold layer (fact_real_estate)
-    silver_to_fact = BigQueryInsertJobOperator(
+    silver_to_gold_fact_real_estate = BigQueryInsertJobOperator(
         task_id="gold_layer_fact_table_creation",
-        # gcp_conn_id="google_cloud_default",
+        gcp_conn_id="google_cloud_default",
+        location="asia-south1",
         configuration={
             "query" : {
                 "query" : "{% include 'project_utils/fact_real_estate.sql' %}",
@@ -113,4 +117,4 @@ with DAG(
     )
 
 # workflow direction and path.
-fetch_upload >> raw_to_silver >> silver_to_dim >> silver_to_fact
+fetch_upload >> raw_to_silver >> silver_to_gold_dim_property >> silver_to_gold_fact_real_estate
