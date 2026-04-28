@@ -14,8 +14,8 @@ load_dotenv()
 def fetch_and_upload():
     # import functions as callable modules.
     try:
-        from project_utils.upload import transform_and_upload
         from project_utils.ingest import fetch_data
+        from project_utils.upload import upload_to_bigquery
     except Exception as e:
         logging.error(f"Import problem occured (orchestration phase): {e}")
         raise # raise the issue in airflow UI.
@@ -26,7 +26,7 @@ def fetch_and_upload():
 
     try:
         for chunk in fetch_data(): # chunk why? we used yield generator to pause continuous data fetching after a batch.
-            transform_and_upload(chunk)
+            upload_to_bigquery(chunk)
             data_content += len(chunk)
             logging.info(f"uploaded {data_content} rows...")
     except Exception as e:
@@ -74,6 +74,7 @@ with DAG(
         params={
              "project_id": os.getenv("GCP_PROJECT_ID"),
              "raw_dataset_id": os.getenv("GCP_DATASET_ID_RAW"),
+             "raw_table_id": os.getenv("GCP_TABLE_NAME_RAW"),
              "silver_dataset_id": os.getenv("GCP_DATASET_ID_SILVER")
         }
     )
@@ -105,7 +106,7 @@ with DAG(
             "query" : {
                 "query" : "{% include 'project_utils/fact_real_estate.sql' %}",
                 "useLegacySql" : False
-            },    
+            },
         },
         params={
             "project_id": os.getenv("GCP_PROJECT_ID"),
