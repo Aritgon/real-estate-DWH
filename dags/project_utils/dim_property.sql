@@ -23,7 +23,7 @@ USING (
     select
         distinct property_type, residential_type
     from `{{ params.project_id }}.{{ params.silver_dataset_id }}.real_estate_silver`)
-select 
+select
     -- synthetic key as primary key.
     FARM_FINGERPRINT(concat(safe_cast(property_type as STRING), safe_cast(residential_type as STRING))),
     property_type,

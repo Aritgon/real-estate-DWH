@@ -167,7 +167,7 @@ def upload_to_bigquery(chunk):
 
     if not chunk:
         logging.warning("received empty batch of data. skipping...")
-        raise
+        return # this will exit the function if the data is empty.
 
     try:
         logging.info(f"Starting bigquery ingestion with {len(chunk)} rows...")
@@ -187,7 +187,7 @@ def upload_to_bigquery(chunk):
 
     except Exception as e:
         logging.error(f"error occured while processing the data -> {e}")
-        raise
+        return # this will exit the function if there is an error while processing the data.
 
     # upload configuration.
     job_config = bigquery.LoadJobConfig(
@@ -199,7 +199,7 @@ def upload_to_bigquery(chunk):
     # data uploading to bigquery.
     try:
         job = client.load_table_from_dataframe(
-            data=df,
+            dataframe=df,
             destination=TABLE_ID,
             job_config=job_config
         )
@@ -207,5 +207,5 @@ def upload_to_bigquery(chunk):
         logging.info(f"successfully uploaded {len(chunk)} rows to bigquery {TABLE_ID}")
     except Exception as e:
         logging.critical(f"error occured at data ingestion to bigquery raw layer stage : {e}")
-        raise
+        raise # this will raise the exception to be handled by the caller function.
 

@@ -35,7 +35,6 @@ def fetch_and_upload():
     finally:
         logging.info(f"we've successfully moved {data_content} rows of data towards bigquery dataset.")
 
-
 # setting up default args.
 default_args = {
     'owner' : "arit gon",
