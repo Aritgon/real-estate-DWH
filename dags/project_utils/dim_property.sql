@@ -19,16 +19,19 @@ create or replace table `{{ params.project_id }}.{{ params.gold_dataset_id }}.di
 -- MERGE operations for smoother data ingestions and data quality.
 MERGE `{{ params.project_id }}.{{ params.gold_dataset_id }}.dim_property` as P
 USING (
+
     with cte as (
     select
         distinct property_type, residential_type
     from `{{ params.project_id }}.{{ params.silver_dataset_id }}.real_estate_silver`)
+
 select
     -- synthetic key as primary key.
     FARM_FINGERPRINT(concat(safe_cast(property_type as STRING), safe_cast(residential_type as STRING))),
     property_type,
     residential_type
 from cte
+
 ) as S
 -- joining columns.
 ON P.property_type = S.property_type and P.residential_type = S.residential_type
@@ -46,4 +49,3 @@ values (
     S.property_type,
     S.residential_type
 );
-

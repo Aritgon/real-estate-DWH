@@ -41,25 +41,17 @@ An **automated ELT pipeline** designed to ingest, clean, and model `real estate 
 ### Problems Solved
 1. **Data Quality**: The architecture successfully filtered out approximately `~8.5%` of `junk` data from the `raw` layer, ensuring the `gold layer` is clean for reporting without requiring aggressive **manual cleaning**.
 
-> The following filter removes `~1%` of data from the `raw` layer:
+> The following filter removes `~8.5%` of data from the `raw` layer:
 
 ```
-    where assessedvalue is not null and saleamount is not null
-    and safe_cast(assessedvalue as FLOAT64) > 0 and safe_cast(saleamount as FLOAT64) > 0
-    -- filtering date.
-    and parse_date('%Y-%m-%d', LEFT(daterecorded, 10)) between '2001-01-01' and current_date()
+    where safe_cast(assessedvalue as FLOAT64) is not null and safe_cast(assessedvalue as FLOAT64) between 2000 and 2250000
+    and safe_cast(saleamount as FLOAT64) is not null and safe_cast(saleamount as FLOAT64) between 2000 and 3050000
+    and safe_cast(salesratio as FLOAT64) is not null and safe_cast(salesratio as FLOAT64) between 0 and 1.4
+    and parse_date('%Y-%m-%d', LEFT(daterecorded, 10)) between '2001-01-01' and '2025-01-01'
     and safe_cast(listyear as INT64) <= extract(year from (parse_date('%Y-%m-%d', LEFT(daterecorded, 10))))
 ```
 
-> This filter removes `~8.5%` of data by removing numerical outliers and anomalies from the `silver` layer:
-
-```
-    a.assessed_value between 2000 and 2250000
-    and a.sale_amount between 2000 and 3050000
-    and safe_divide(a.assessed_value, a.sale_amount) between 0 and 1.4
-```
-
-2. **Deduplication**: Implemented `SCD` (Slowly Changing Dimension) `Type 1` to **remove duplicate API entries** and **maintain data integrity** in BigQuery.
+2. **Deduplication**: Implemented `SCD` (Slowly Changing Dimension) `Type 1` in both `silver layer` and `gold layer` to **remove duplicate API entries** and **maintain data integrity** in BigQuery.
 
 3. **Efficient Updates**: Used structured `MERGE` and `USING` conditions on the **fact table**. While most columns use a standard `WHEN MATCHED` logic, I applied specific filters to **descriptive** columns (town, assessed_value, sale_amount) to ensure the warehouse only **updates** when actual changes are detected.
 

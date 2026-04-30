@@ -50,8 +50,8 @@ USING (
     round(safe_cast(saleamount as FLOAT64), 2) as sale_amount,
     round(safe_cast(salesratio as FLOAT64), 3) as sales_ratio,
 
-    trim(ifnull(propertytype, "unspecified")) as property_type,
-    trim(ifnull(residentialtype, "unspecified")) as residential_type,
+    lower(trim(ifnull(propertytype, "unspecified"))) as property_type,
+    lower(trim(ifnull(residentialtype, "unspecified"))) as residential_type,
 
     current_timestamp() as process_timestamp
 
